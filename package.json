@@ -1,0 +1,11 @@
+{
+  "dependencies" : {
+    "moment" : "",
+    "express" : "4.0.0",
+    "source-map-support" : "0.2.8",
+    "ga-analytics" : "0.0.7"
+  },
+  "version" : "0.1.0-SNAPSHOT",
+  "description" : "FIXME: write this!",
+  "name" : "loom",
+}
