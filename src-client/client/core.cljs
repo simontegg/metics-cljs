@@ -5,6 +5,12 @@
             [om.dom :as dom :include-macros true])
   (:require-macros [kioo.om :refer [defsnippet deftemplate]]))
 
+; websockets
+(def socket (.connect (.io js/window) "http://localhost"))
+(.on socket "data" (fn [data]
+  (.log js/console data)))
+
+
 (defsnippet my-nav-item "main.html" [:.nav-item]
   [[caption func]]
   {#_#_[:a] (listen :onClick #(func caption))

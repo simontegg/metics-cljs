@@ -10,7 +10,7 @@
 
   :node-dependencies [[source-map-support "0.2.8"]
                       [ga-analytics "0.0.7"]
-                      [express "4.0.0"]
+                      [express "4.8.0"]
                       [moment ""]]
 
   :plugins [[lein-cljsbuild "1.0.3"]
@@ -23,7 +23,7 @@
   :cljsbuild {
     :builds [{:id "loom"
               :source-paths ["src-server"]
-              :notify-command ["node" "run.js"] ;; << ADD THIS
+              ; :notify-command ["node" "run.js"] ;; << ADD THIS
               :compiler {
                 :output-to "out/loom.js"
                 :output-dir "out"
@@ -33,6 +33,7 @@
             { :id "client"
               :source-paths ["src-client"]
               :compiler {
+                :foreign-libs []
                 :verbose true
                 :output-to "out/build/app.js"
                 :pretty-print true
