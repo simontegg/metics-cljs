@@ -1,8 +1,8 @@
 (ns loom.core
   (:require [cljs.nodejs :as node]
             [cljs.reader :as reader]
-            [cljs.core.async :refer [put! chan <! >!]])
-  (:require-macros  [cljs.core.async.macros :as am :refer [go]]))
+            [cljs.core.async :refer [put! chan <! >! timeout ]])
+  (:require-macros  [cljs.core.async.macros :as am :refer [go go-loop]]))
 
 (enable-console-print!)
 (def express (node/require "express"))
@@ -51,19 +51,27 @@
 
 (defn setOptions [yearMonth groupId]
   (let [m (.startOf (moment yearMonth) "month") end (.endOf (moment yearMonth) "month") options (getOptions)]
-    (println (.format m "YYYY-MM-DD")) (println (.format end "YYYY-MM-DD"))
+    (println (.format m "YYYY-MM-DD"))
     (aset options "startDate" (.format m "YYYY-MM-DD"))
     (aset options "endDate" (.format end "YYYY-MM-DD"))
     (aset options "filter" (setFilters groupId))
-    (println options)
     options))
 
     ; put! c (aget res "rows" "length")
     ; let [n (aget res "query")] (println n)
-(defn fetchData [options]
+(defn fetchDatum [options ch]
   (gaAnalytics options (fn [err, res]
     (if (true? err) (println "err" err)
-      (put! c (aget res "totalResults"))))))
+      (put! ch (aget res "totalResults"))))))
+
+(defn fetchData [optionsSeq]
+  (let [ch (chan 1)]
+    (go-loop [i 0]
+      (fetchDatum (nth optionsSeq i) ch)
+      (<! (timeout 101))
+      (println (str 'iteration' i))
+      (if (< i (- (count optionsSeq) 1)) (recur (inc i))))
+    ch))
 
 (defn getMonthAgoString [monthAgo]
   (.format (.subtract (moment) monthAgo "months") "YYYY-MM"))
@@ -83,13 +91,14 @@
 
 (defn serve [req res]
   (let [query (parseQuery (aget req "url"))]
-  (println query )
     (if-let [groupId (aget query "group")]
       (let [
         period (setPeriod query)
         monthSeq (apply getMonthSeq period)
-        optionsSeq (map #(setOptions % groupId) monthSeq)]
-        (fetchData (nth optionsSeq 1))
+        optionsSeq (map #(setOptions % groupId) monthSeq)
+        ch (fetchData optionsSeq)]
+        (println (count optionsSeq))
+        (go (while true (println (<! ch))))
         (.json res #js{:test groupId}))
       (.sendFile res appPath))))
 

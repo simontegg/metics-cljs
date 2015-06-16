@@ -10,27 +10,16 @@
 (.on socket "data" (fn [data]
   (.log js/console data)))
 
-
-(defsnippet my-nav-item "main.html" [:.nav-item]
-  [[caption func]]
-  {#_#_[:a] (listen :onClick #(func caption))
-   [:h1] (content caption)})
-
-(defsnippet my-header "main.html" [:header]
-  [{:keys [heading navigation]}]
-  {[:h1] (content heading)
-   #_#_ [:ul] (content (map my-nav-item navigation))})
+(defsnippet box "main.html" [:.box]
+  [{:keys [test]}]
+  {[:.container-1] (content test)})
 
 (deftemplate my-page "main.html"
   [data]
-  {[:header] (substitute (my-header data))
-   [:div] (set-style :color "red")})
+  {[:body] (content box data)})
 
 (defn init [data] (om/component (my-page data)))
 
-(def app-state (atom {:heading "main"
-                      :content    "Hello World"
-                      :navigation [["home" #(js/alert %)]
-                                   ["next" #(js/alert %)]]}))
+(def app-state (atom {:test "TEST" }))
 
 (om/root init app-state {:target  (.-body js/document)})
