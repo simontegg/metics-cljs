@@ -1,25 +1,35 @@
 (ns client.core
-  (:require [kioo.om :refer [content set-style set-attr do-> substitute listen]]
-            [kioo.core :refer [handle-wrapper]]
-            [om.core :as om :include-macros true]
-            [om.dom :as dom :include-macros true])
-  (:require-macros [kioo.om :refer [defsnippet deftemplate]]))
+  (:require [cljsjs.react :as react]
+            [reagent.core :as reagent :refer [atom]]))
 
 ; websockets
 (def socket (.connect (.io js/window) "http://localhost"))
 (.on socket "data" (fn [data]
   (.log js/console data)))
 
-(defsnippet box "main.html" [:.box]
-  [{:keys [test]}]
-  {[:.container-1] (content test)})
+(defonce group-number (atom 0))
 
-(deftemplate my-page "main.html"
-  [data]
-  {[:body] (content box data)})
+(defn atom-input [value]
+  [:input {
+    :type "text"
+    :id "search"
+    :placeholder "Enter group number"
+    :value @value
+    :on-change #(reset! value (-> % .-target .-value))}])
 
-(defn init [data] (om/component (my-page data)))
+(defn search-form []
+  (let [val (atom "")]
+    (fn []
+      [:div.box
+        [:div.btn "Submit"]
+        [:div.container-1
+          [atom-input val]]])))
 
-(def app-state (atom {:test "TEST" }))
 
-(om/root init app-state {:target  (.-body js/document)})
+
+(defn by-id [id]
+  (.getElementById js/document id))
+
+
+(reagent/render [search-form]
+                (by-id "app"))

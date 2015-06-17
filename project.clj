@@ -5,8 +5,8 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-2311"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
-                 [kioo "0.4.0"]
-                 [om "0.7.1"]]
+                 [cljsjs/react "0.13.3-0"]
+                 [reagent "0.5.0"]]
 
   :node-dependencies [[source-map-support "0.2.8"]
                       [ga-analytics "0.0.7"]
@@ -17,8 +17,6 @@
             [lein-npm "0.5.0"]]
 
   :source-paths ["src-server" "src-client"]
-
-  :resource-paths ["resources"]
 
   :cljsbuild {
     :builds [{:id "loom"
@@ -33,11 +31,10 @@
             { :id "client"
               :source-paths ["src-client"]
               :compiler {
+                :closure-warnings {:non-standard-jsdoc :off}
                 :foreign-libs []
                 :verbose true
                 :output-to "out/build/app.js"
                 :pretty-print true
                 :optimizations :simple
-                :preamble ["react/react.js"]
-                :externs ["react/externs/react.js"]
                 }}]})
