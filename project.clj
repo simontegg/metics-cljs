@@ -5,6 +5,8 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-2311"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
+                 [im.chit/purnam "0.5.2"]
+                 [cljs-ajax "0.3.13"]
                  [cljsjs/react "0.13.3-0"]
                  [reagent "0.5.0"]]
 

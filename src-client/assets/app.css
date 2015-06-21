@@ -84,5 +84,9 @@ body{
   -webkit-transition-property: all;
   transition-property: all;
   -webkit-transition-duration: .3s;
-  transition-duration: .3s;  
+  transition-duration: .3s;
+}
+
+input:focus {
+  outline: none;
 }
