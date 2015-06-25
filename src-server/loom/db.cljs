@@ -10,14 +10,14 @@
 (def r (node/require "rethinkdb"))
 
 
-(defn getClient []
-  (let [
-    client (.createClient
-      redis
-      10232
-      "pub-redis-10232.us-east-1-4.ec2.garantiadata"
-      #js{:no_ready_check true :auth_pass REDIS_PASSWORD}])))
-
+; (defn getClient []
+;   (let [
+;     client (.createClient
+;       redis
+;       10232
+;       "pub-redis-10232.us-east-1-4.ec2.garantiadata"
+;       #js{:no_ready_check true :auth_pass REDIS_PASSWORD}])))
+;
 
       ; (defn connect []
       ;   (let [ch (chan)]
